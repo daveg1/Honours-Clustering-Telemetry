@@ -31,7 +31,7 @@ export function initialiseGlobals(): Globals {
 	const camera = new THREE.PerspectiveCamera(
 		60,
 		window.innerWidth / window.innerHeight,
-		1,
+		0.01,
 		100
 	);
 	camera.position.set(10, 10, 10);

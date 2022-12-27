@@ -13,7 +13,7 @@ function createPointCloud(data: RovCampaign, globals: Globals): THREE.Points {
 	const pointsMaterial = new THREE.PointsMaterial({
 		vertexColors: true,
 		side: THREE.DoubleSide,
-		size: 0.001,
+		size: 0.01,
 	});
 
 	// Set point cloud colours
