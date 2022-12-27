@@ -23,27 +23,34 @@ window.onresize = () => {
 };
 
 window.onload = async () => {
-	const statusElem = document.querySelector('#status');
+	const statusElem = document.querySelector('#status') as HTMLDivElement;
 
-	if (statusElem) {
-		statusElem.textContent = 'Loading...';
-	}
+	statusElem.textContent = 'Loading...';
 
 	// Set up viewer
 	updateView(globals);
 
-	// Load models and add viewer to page
-	await loadModels(globals.scene);
-	document.body.append(globals.renderer.domElement);
-	document.body.append(stats.dom);
-
-	// Load ROV Data
-	await loadRovCampaign(globals);
-
-	if (statusElem) {
-		statusElem.textContent = 'Ready';
+	// Load models
+	try {
+		await loadModels(globals.scene);
+	} catch (error) {
+		statusElem.textContent = 'Error loading models';
+		return;
 	}
 
-	// Initial render
+	// Load ROV Data and render point cloud
+	try {
+		await loadRovCampaign(globals);
+	} catch (error) {
+		statusElem.textContent = 'Error loading campaign data';
+		return;
+	}
+
+	// Add viewer and FPS counter once ready
+	document.body.append(globals.renderer.domElement);
+	document.body.append(stats.dom);
+	statusElem.textContent = 'Ready';
+
+	// Start render loop
 	animate();
 };
