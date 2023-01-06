@@ -21,7 +21,7 @@ namespace ProcessView
         /// </summary>
         public void ProcessEtr()
         {
-            using StreamReader streamReader = new("telemetry/220256-322_XLX31_SGS.etr");
+            using StreamReader streamReader = new("Data/telemetry.etr");
 
             string line;
             string[] split;
@@ -29,24 +29,29 @@ namespace ProcessView
 
             int count = 0;
 
-            // Get first line that isn't the header to normalise Eastings and Northings.
-            line = streamReader.ReadLine();
-            line = streamReader.ReadLine();
+            line = streamReader.ReadLine(); // skip header line
+            line = streamReader.ReadLine(); // first record
             split = line.Split(' ');
 
             float eastingOrigin = (float)Convert.ToDouble(split[2]);
             float northingOrigin = (float)Convert.ToDouble(split[3]);
 
-            // Read file.
+            // Read file
             while ((line = streamReader.ReadLine()) != null && count < maxRecords)
+            //while ((line = streamReader.ReadLine()) != null)
             {
+                if (line == "")
+                {
+                    continue;
+                }
+
                 split = line.Split(' ');
 
-                // Date time.
+                // Date time
                 date = split[0].Split('-');
                 Times[count] = Convert.ToDateTime($"{date[2]}-{date[1]}-{date[0]} {split[1]}");
 
-                // Easting, northing and water depth to Vector3.
+                // Easting, northing and water depth to Vector3
                 Positions[count * 3] = eastingOrigin - Convert.ToDouble(split[2]);
                 Positions[(count * 3) + 1] = -Convert.ToDouble(split[4]);
                 Positions[(count * 3) + 2] = northingOrigin - Convert.ToDouble(split[3]);
