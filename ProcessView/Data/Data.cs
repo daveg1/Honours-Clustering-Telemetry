@@ -21,7 +21,7 @@ namespace ProcessView
         /// </summary>
         public void ProcessEtr()
         {
-            using StreamReader streamReader = new("Data/telemetry.etr");
+            using StreamReader streamReader = new("Data/telemetry.csv");
 
             string line;
             string[] split;
@@ -31,7 +31,7 @@ namespace ProcessView
 
             line = streamReader.ReadLine(); // skip header line
             line = streamReader.ReadLine(); // first record
-            split = line.Split(' ');
+            split = line.Split(',');
 
             float eastingOrigin = (float)Convert.ToDouble(split[2]);
             float northingOrigin = (float)Convert.ToDouble(split[3]);
@@ -45,7 +45,8 @@ namespace ProcessView
                     continue;
                 }
 
-                split = line.Split(' ');
+                // 20-02-27,20:50:47.502,0.15818706419820527,0.41015873015873017,92.93,-6.3,2.0,19.9
+                split = line.Split(',');
 
                 // Date time
                 date = split[0].Split('-');
