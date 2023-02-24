@@ -33,16 +33,20 @@ window.onload = async () => {
 	// Load models
 	try {
 		await loadModels(globals.scene);
+		console.log('Models loaded');
 	} catch (error) {
 		statusElem.textContent = 'Error loading models';
+		console.error(error);
 		return;
 	}
 
 	// Load ROV Data and render point cloud
 	try {
 		await loadRovCampaign(globals);
+		console.log('Campaign data loaded');
 	} catch (error) {
 		statusElem.textContent = 'Error loading campaign data';
+		console.error(error);
 		return;
 	}
 
