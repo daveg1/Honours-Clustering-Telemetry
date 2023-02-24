@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import type { Globals } from '../types/Globals';
 import type { RovCampaign } from '../types/RovCampaign';
 
+const endpoint = 'http://localhost:5000/rov';
+
 function createPointCloud(data: RovCampaign, globals: Globals): THREE.Points {
 	const vertices = data.positions;
 	const geometry = new THREE.BufferGeometry();
@@ -39,9 +41,8 @@ function createPointCloud(data: RovCampaign, globals: Globals): THREE.Points {
 export async function loadRovCampaign(globals: Globals) {
 	console.log('loading rov data');
 
-	const data = (await fetch('/api/Viewer/RovCampaignData').then((res) =>
-		res.json()
-	)) as RovCampaign;
+	const req = await fetch(endpoint);
+	const data = (await req.json()) as RovCampaign;
 
 	// Each route
 	// const rovCampaigns = [];
