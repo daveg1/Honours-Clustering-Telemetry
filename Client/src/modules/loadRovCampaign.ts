@@ -19,21 +19,21 @@ function createPointCloud(data: RovCampaign, globals: Globals): THREE.Points {
 	});
 
 	// Set point cloud colours
-	const colours: number[] = [];
-	const colour = new THREE.Color();
+	// const colours: number[] = [];
+	// const colour = new THREE.Color();
 
-	data.kpi.forEach((k) => {
-		const gradient = globals.heatMap[k];
-		colour.setRGB(gradient[0], gradient[1], gradient[2]);
-		colours.push(colour.r, colour.g, colour.b);
-	});
+	// data.kpi.forEach((k) => {
+	// 	const gradient = globals.heatMap[k];
+	// 	colour.setRGB(gradient[0], gradient[1], gradient[2]);
+	// 	colours.push(colour.r, colour.g, colour.b);
+	// });
 
-	geometry.setAttribute('color', new THREE.Float32BufferAttribute(colours, 3));
+	// geometry.setAttribute('color', new THREE.Float32BufferAttribute(colours, 3));
 
 	const pointCloud = new THREE.Points(geometry, pointsMaterial);
-	pointCloud.scale.set(0.06, 0.06, 0.06);
+	pointCloud.scale.set(0.1, 0.1, 0.1);
 	pointCloud.rotation.set(0, Math.PI / 3, 0);
-	pointCloud.position.set(6.6, 4.1, -7);
+	pointCloud.position.set(6.6, 6.8, -7);
 
 	return pointCloud;
 }
