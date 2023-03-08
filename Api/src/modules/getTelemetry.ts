@@ -25,13 +25,18 @@ export async function getTelemetry(): Promise<RovCampaign> {
 	const northingOrigin = parseFloat(firstLine[3])
 
 	for (const line of lines) {
+		// Skip empty line
+		if (!line) {
+			continue
+		}
+
 		const split = line.split(',') as string[]
 		const [date, time, easting, northing, waterDepth, roll, pitch, heading] = split
 
 		const [year, month, day] = (date as string).split('-')
 		const dateTime = new Date(`20${year}-${month}-${day}T${time}`).getTime()
 
-		const scaleFactor = 250 // used to scale up the points for the 3d render
+		const scaleFactor = 250 // used to scale up the points in the 3d model
 
 		data.positions.push((eastingOrigin - parseFloat(easting)) * scaleFactor)
 		data.positions.push(-1 * parseFloat(waterDepth))
