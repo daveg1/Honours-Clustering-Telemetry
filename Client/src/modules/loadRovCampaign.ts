@@ -23,8 +23,8 @@ function createPointCloud(data: RovCampaign, globals: Globals): THREE.Points {
 	const colour = new THREE.Color();
 
 	data.kpi.forEach((k) => {
-		const gradient = globals.heatMap[+k];
-		colour.setRGB(...gradient);
+		const gradient = globals.heatMap[k];
+		colour.setRGB(gradient[0], gradient[1], gradient[2]);
 		colours.push(colour.r, colour.g, colour.b);
 	});
 

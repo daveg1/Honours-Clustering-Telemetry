@@ -5,5 +5,5 @@ export type Globals = {
 	renderer: THREE.WebGLRenderer;
 	scene: THREE.Scene;
 	controls: OrbitControls;
-	heatMap: [number, number, number][];
+	heatMap: [number, number, number, number][];
 };
