@@ -19,10 +19,10 @@ export async function getTelemetry(): Promise<RovCampaign> {
 	const lines = rawData.split(/\r\n|\n/) as any[]
 
 	lines.shift() // skip header line
-	const firstLine = lines.shift()
+	const firstLine = lines.shift().split(',')
 
-	const eastingOrigin = firstLine[2] as number
-	const northingOrigin = firstLine[3] as number
+	const eastingOrigin = parseFloat(firstLine[2])
+	const northingOrigin = parseFloat(firstLine[3])
 
 	for (const line of lines) {
 		const split = line.split(',') as string[]
@@ -31,16 +31,16 @@ export async function getTelemetry(): Promise<RovCampaign> {
 		const [year, month, day] = (date as string).split('-')
 		const dateTime = new Date(`20${year}-${month}-${day}T${time}`).getTime()
 
-		// data.positions.push(eastingOrigin - parseInt(easting))
-		data.positions.push(parseInt(easting))
-		data.positions.push(-1 * parseInt(waterDepth))
-		// data.positions.push(northingOrigin - parseInt(northing))
-		data.positions.push(parseInt(northing))
+		const scaleFactor = 250 // used to scale up the points for the 3d render
+
+		data.positions.push((eastingOrigin - parseFloat(easting)) * scaleFactor)
+		data.positions.push(-1 * parseFloat(waterDepth))
+		data.positions.push((northingOrigin - parseFloat(northing)) * scaleFactor)
 
 		data.times.push(dateTime)
-		data.rolls.push(parseInt(roll))
-		data.pitches.push(parseInt(pitch))
-		data.headings.push(parseInt(heading))
+		data.rolls.push(parseFloat(roll))
+		data.pitches.push(parseFloat(pitch))
+		data.headings.push(parseFloat(heading))
 	}
 
 	const maxInterval = 10000000
