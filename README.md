@@ -7,6 +7,17 @@ The frontend is a ThreeJS scene that renders the model of an underwater structur
 
 and a point cloud of the inspection campaign.
 
-## TODO
-- Include normalised telemetry data to be used by the project
-- Include DBSCAN code to filter and format the raw telemetry based on user inputs and output to a file that can be read and served by the API.
+## Tasks
+- ☑ Normalise telemetry dataset
+	- ☑ specifically easting and northing columns
+- ☑ Use Sklearn's DBSCAN model to perform clustering
+- ☐ Use clustering evaluation metrics to qualify the model
+	- ☑ DBSCAN features include:
+		- ☑ eps = the maximum distance between two samples for one to be considered as in the neighborhood of the other
+		- ☑ min_samples = The number of samples (or total weight) in a neighborhood for a point to be considered as a core point.
+	- ☐ metrics include:
+		- ☑ silhouette coefficient (sklearn)
+		- ☐ davies-bouldin score (sklearn)
+		- ☐ dunn's index (need to implement)
+- ☐ Output a "filtered" dataset by removing the identified outliers
+- ☐ Update frontend to allow choosing a specific leg of the journey to view
