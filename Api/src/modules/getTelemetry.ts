@@ -2,19 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import csvParser from 'csv-parser'
 import { finished } from 'node:stream/promises'
-import type { RovCampaign } from '../types/RovCampaign'
-
-type DataRow = {
-	Easting: string
-	Northing: string
-	WaterDepth: string
-	Label: string
-	Date: string
-	Time: string
-	Roll: string
-	Pitch: string
-	Heading: string
-}
+import type { DataRow, RovCampaign } from '../types/RovCampaign'
 
 /**
  * Reads and parses the telemetry.csv file into JSON format
