@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import { getTelemetry as getTelemetry } from './modules/getTelemetry'
+import { performClustering } from './modules/performClustering'
 
 const app = express()
 
@@ -12,8 +13,18 @@ app.use(cors())
 
 // Set routes
 app.get('/rov', async (_, res) => {
-	const tel = await getTelemetry()
-	res.status(200).json(tel)
+	// Run DBSCAN to generate denoised CSV file
+	// TODO: ideally this outputs to JSON directly to save some steps
+	const instance = performClustering()
+
+	instance
+		.once('close', async () => {
+			const tel = await getTelemetry()
+			res.status(200).json(tel)
+		})
+		.once('error', () => {
+			res.status(500).json({ error: 'failed to run pythong script' })
+		})
 })
 
 // Start server
