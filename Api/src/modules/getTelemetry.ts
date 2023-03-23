@@ -2,13 +2,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import csvParser from 'csv-parser'
 import { finished } from 'node:stream/promises'
-import type { DataRow, RovCampaign } from '../types/RovCampaign'
+import type { ApiResponse, DataRow, RovCampaign } from '../types/RovCampaign'
 
-/**
- * Reads and parses the telemetry.csv file into JSON format
- * @returns parsed ROV campaign data
- */
-export async function getTelemetry(): Promise<RovCampaign> {
+async function readFile(filePath: string): Promise<RovCampaign> {
 	const data: RovCampaign = {
 		positions: [],
 		times: [],
@@ -22,7 +18,7 @@ export async function getTelemetry(): Promise<RovCampaign> {
 	const northingOrigin = parseFloat('0.4420063492064438')
 
 	const readStream = fs
-		.createReadStream(path.resolve(__dirname, '..', 'data/telemetry_denoised.csv'))
+		.createReadStream(filePath)
 		.pipe(csvParser())
 		.on('data', (row: DataRow) => {
 			const { Date: date, Time, Easting, Northing, WaterDepth, Roll, Pitch, Heading } = row
@@ -59,4 +55,17 @@ export async function getTelemetry(): Promise<RovCampaign> {
 
 	await finished(readStream)
 	return data
+}
+
+/**
+ * Reads and parses the telemetry.csv file into JSON format
+ * @returns parsed ROV campaign data
+ */
+export async function getTelemetry(): Promise<ApiResponse> {
+	const dataDir = path.resolve(__dirname, '../data')
+
+	const raw = await readFile(path.join(dataDir, 'telemetry.csv'))
+	const denoised = await readFile(path.join(dataDir, 'telemetry_denoised.csv'))
+
+	return { raw, denoised }
 }
