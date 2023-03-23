@@ -15,7 +15,10 @@ export async function getTelemetry(): Promise<RovCampaign> {
 		headings: [],
 	}
 
-	const rawData = await readFileAsync(path.resolve(__dirname, '..', 'data/telemetry.csv'), 'utf-8')
+	const rawData = await readFileAsync(
+		path.resolve(__dirname, '..', 'data/telemetry_denoised.csv'),
+		'utf-8',
+	)
 	const lines = rawData.split(/\r\n|\n/) as any[]
 
 	lines.shift() // skip header line
