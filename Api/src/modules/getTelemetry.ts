@@ -16,6 +16,10 @@ type DataRow = {
 	Heading: string
 }
 
+/**
+ * Reads and parses the telemetry.csv file into JSON format
+ * @returns parsed ROV campaign data
+ */
 export async function getTelemetry(): Promise<RovCampaign> {
 	const data: RovCampaign = {
 		positions: [],
