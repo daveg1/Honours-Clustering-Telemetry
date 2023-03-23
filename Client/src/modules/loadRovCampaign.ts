@@ -44,8 +44,6 @@ export async function loadRovCampaign(globals: Globals) {
 	const req = await fetch(endpoint);
 	const data = (await req.json()) as ApiResponse;
 
-	console.log(data);
-
 	// Each route
 	// const rovCampaigns = [];
 	// const rovCampaignVectors = [];
