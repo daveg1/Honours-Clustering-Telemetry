@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import type { Globals } from '../types/Globals';
-import type { RovCampaign } from '../types/RovCampaign';
+import type { ApiResponse, RovCampaign } from '../types/RovCampaign';
 
 const endpoint = 'http://localhost:5000/rov';
 
@@ -42,7 +42,9 @@ export async function loadRovCampaign(globals: Globals) {
 	console.log('loading rov data');
 
 	const req = await fetch(endpoint);
-	const data = (await req.json()) as RovCampaign;
+	const data = (await req.json()) as ApiResponse;
+
+	console.log(data);
 
 	// Each route
 	// const rovCampaigns = [];
@@ -51,6 +53,6 @@ export async function loadRovCampaign(globals: Globals) {
 	// let campaignLeg = [];
 
 	// Point cloud
-	const pointCloud = createPointCloud(data, globals);
+	const pointCloud = createPointCloud(data.denoised, globals);
 	globals.scene.add(pointCloud);
 }
