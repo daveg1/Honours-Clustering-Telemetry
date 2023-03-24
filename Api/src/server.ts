@@ -13,12 +13,19 @@ app.use(cors())
 
 // Set routes
 // TODO: add queryparams for a specific leg of the journey
-app.get('/rov/denoised', async (_, res) => {
+app.get('/rov/denoised', async (req, res) => {
+	const start = parseInt(req.query.start?.toString() ?? '', 10)
+	const end = parseInt(req.query?.end?.toString() ?? '', 10)
+
+	if (Number.isNaN(start) || Number.isNaN(end)) {
+		return res.status(401).json({ error: 'start and end must be integers' })
+	}
+
 	// Run DBSCAN to generate denoised CSV file
 	// * ideally this outputs to JSON directly to save some steps
-	const instance = performClustering()
+	const clusterProcess = performClustering(start, end)
 
-	instance
+	clusterProcess
 		.once('close', async () => {
 			try {
 				const tel = await getTelemetryDenoised()
@@ -27,7 +34,8 @@ app.get('/rov/denoised', async (_, res) => {
 				res.status(500).json({ error: 'Failed to load denoised data' })
 			}
 		})
-		.once('error', () => {
+		.once('error', (err) => {
+			console.error('error', err)
 			res.status(500).json({ error: 'Failed to perform clustering' })
 		})
 })
