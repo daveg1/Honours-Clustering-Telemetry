@@ -18,8 +18,3 @@ export type DataRow = {
 	Pitch: string
 	Heading: string
 }
-
-export type ApiResponse = {
-	raw: RovCampaign
-	denoised: RovCampaign
-}

@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import { getTelemetry as getTelemetry } from './modules/getTelemetry'
+import { getTelemetryDenoised, getTelemetryRaw } from './modules/getTelemetry'
 import { performClustering } from './modules/performClustering'
 
 const app = express()
@@ -12,19 +12,33 @@ app.set('port', process.env.PORT ?? 5000)
 app.use(cors())
 
 // Set routes
-app.get('/rov', async (_, res) => {
+// TODO: add queryparams for a specific leg of the journey
+app.get('/rov/denoised', async (_, res) => {
 	// Run DBSCAN to generate denoised CSV file
-	// TODO: ideally this outputs to JSON directly to save some steps
+	// * ideally this outputs to JSON directly to save some steps
 	const instance = performClustering()
 
 	instance
 		.once('close', async () => {
-			const tel = await getTelemetry()
-			res.status(200).json(tel)
+			try {
+				const tel = await getTelemetryDenoised()
+				res.status(200).json(tel)
+			} catch (error) {
+				res.status(500).json({ error: 'Failed to load denoised data' })
+			}
 		})
 		.once('error', () => {
-			res.status(500).json({ error: 'failed to run pythong script' })
+			res.status(500).json({ error: 'Failed to perform clustering' })
 		})
+})
+
+app.get('/rov/raw', async (_, res) => {
+	try {
+		const data = await getTelemetryRaw()
+		res.status(200).json(data)
+	} catch (err) {
+		res.status(500).json({ error: 'Failed to load raw data' })
+	}
 })
 
 // Start server
