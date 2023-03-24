@@ -65,6 +65,7 @@ export async function loadRovCampaign(globals: Globals) {
 	const toggleViewButton =
 		document.querySelector<HTMLButtonElement>('#toggle-view');
 
+	// Switch between raw and denoised point clouds
 	if (toggleViewButton) {
 		toggleViewButton.onclick = () => {
 			globals.scene.remove(currentPointCloud);
@@ -80,5 +81,8 @@ export async function loadRovCampaign(globals: Globals) {
 			currentPointCloud = createPointCloud(currentView, globals);
 			globals.scene.add(currentPointCloud);
 		};
+
+		// Enable button
+		toggleViewButton.disabled = false;
 	}
 }

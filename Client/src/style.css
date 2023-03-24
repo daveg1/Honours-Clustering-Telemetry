@@ -29,3 +29,7 @@ body {
 	color: #fff;
 	font-size: 0.9rem;
 }
+
+#toggle-view {
+	min-width: 6.5rem
+}
