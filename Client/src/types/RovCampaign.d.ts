@@ -6,8 +6,3 @@ export type RovCampaign = {
 	pitches: number[];
 	headings: number[];
 };
-
-export type ApiResponse = {
-	raw: RovCampaign;
-	denoised: RovCampaign;
-};

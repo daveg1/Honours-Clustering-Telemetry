@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import type { Globals } from '../types/Globals';
-import type { ApiResponse, RovCampaign } from '../types/RovCampaign';
+import type { RovCampaign } from '../types/RovCampaign';
 
 const endpoint = 'http://localhost:5000/rov';
 
@@ -43,8 +43,12 @@ function createPointCloud(data: RovCampaign, globals: Globals): THREE.Points {
 export async function loadRovCampaign(globals: Globals) {
 	console.log('loading rov data');
 
-	const req = await fetch(endpoint);
-	const data = (await req.json()) as ApiResponse;
+	const rawData = (await (
+		await fetch(endpoint + '/raw')
+	).json()) as RovCampaign;
+	const denoisedData = (await (
+		await fetch(endpoint + '/denoised')
+	).json()) as RovCampaign;
 
 	// Each route
 	// const rovCampaigns = [];
@@ -53,7 +57,7 @@ export async function loadRovCampaign(globals: Globals) {
 	// let campaignLeg = [];
 
 	// Point cloud
-	let currentView = data.raw;
+	let currentView = rawData;
 	let currentPointCloud = createPointCloud(currentView, globals);
 	globals.scene.add(currentPointCloud);
 
@@ -65,11 +69,11 @@ export async function loadRovCampaign(globals: Globals) {
 		toggleViewButton.onclick = () => {
 			globals.scene.remove(currentPointCloud);
 
-			if (currentView === data.raw) {
-				currentView = data.denoised;
+			if (currentView === rawData) {
+				currentView = denoisedData;
 				toggleViewButton.textContent = 'Show raw';
 			} else {
-				currentView = data.raw;
+				currentView = rawData;
 				toggleViewButton.textContent = 'Show denoised';
 			}
 
