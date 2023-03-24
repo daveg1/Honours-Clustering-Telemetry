@@ -47,7 +47,7 @@ export async function loadRovCampaign(globals: Globals) {
 		await fetch(endpoint + '/raw')
 	).json()) as RovCampaign;
 	const denoisedData = (await (
-		await fetch(endpoint + '/denoised')
+		await fetch(endpoint + '/denoised?start=10000&end=10619')
 	).json()) as RovCampaign;
 
 	// Each route
