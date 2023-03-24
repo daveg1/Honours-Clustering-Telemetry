@@ -22,7 +22,9 @@ function createPointCloud(data: RovCampaign, globals: Globals): THREE.Points {
 	const colours: number[] = [];
 	const colour = new THREE.Color();
 
-	data.kpi.forEach((k) => {
+	// * Note: hardcoding the first leg of the journey
+	// TODO: do this dynamically based on user input
+	data.kpi.slice(0, 10619).forEach((k) => {
 		const gradient = globals.heatMap[k];
 		colour.setRGB(gradient[0], gradient[1], gradient[2]);
 		colours.push(colour.r, colour.g, colour.b);
@@ -51,6 +53,28 @@ export async function loadRovCampaign(globals: Globals) {
 	// let campaignLeg = [];
 
 	// Point cloud
-	const pointCloud = createPointCloud(data.denoised, globals);
-	globals.scene.add(pointCloud);
+	let currentView = data.raw;
+	let currentPointCloud = createPointCloud(currentView, globals);
+	globals.scene.add(currentPointCloud);
+
+	// Add event listener for swapping view
+	const toggleViewButton =
+		document.querySelector<HTMLButtonElement>('#toggle-view');
+
+	if (toggleViewButton) {
+		toggleViewButton.onclick = () => {
+			globals.scene.remove(currentPointCloud);
+
+			if (currentView === data.raw) {
+				currentView = data.denoised;
+				toggleViewButton.textContent = 'Show raw';
+			} else {
+				currentView = data.raw;
+				toggleViewButton.textContent = 'Show denoised';
+			}
+
+			currentPointCloud = createPointCloud(currentView, globals);
+			globals.scene.add(currentPointCloud);
+		};
+	}
 }
