@@ -1,8 +1,7 @@
 import * as THREE from 'three';
 import type { Globals } from '../types/Globals';
 import type { RovCampaign } from '../types/RovCampaign';
-
-const endpoint = 'http://localhost:5000/rov';
+import { getTelemetryDenoised, getTelemetryRaw } from './telemetry';
 
 function createPointCloud(data: RovCampaign, globals: Globals): THREE.Points {
 	const vertices = data.positions;
@@ -43,12 +42,7 @@ function createPointCloud(data: RovCampaign, globals: Globals): THREE.Points {
 export async function loadRovCampaign(globals: Globals) {
 	console.log('loading rov data');
 
-	const rawData = (await (
-		await fetch(endpoint + '/raw')
-	).json()) as RovCampaign;
-	const denoisedData = (await (
-		await fetch(endpoint + '/denoised?start=10000&end=10619')
-	).json()) as RovCampaign;
+	const rawData = await getTelemetryRaw();
 
 	// Each route
 	// const rovCampaigns = [];
@@ -67,11 +61,18 @@ export async function loadRovCampaign(globals: Globals) {
 
 	// Switch between raw and denoised point clouds
 	if (toggleViewButton) {
-		toggleViewButton.onclick = () => {
+		toggleViewButton.onclick = async () => {
 			globals.scene.remove(currentPointCloud);
 
 			if (currentView === rawData) {
-				currentView = denoisedData;
+				const startInput =
+					document.querySelector<HTMLInputElement>('#start-input');
+				const endInput = document.querySelector<HTMLInputElement>('#end-input');
+
+				const start = startInput?.valueAsNumber ?? 0;
+				const end = endInput?.valueAsNumber ?? 10619;
+
+				currentView = await getTelemetryDenoised(start, end);
 				toggleViewButton.textContent = 'Show raw';
 			} else {
 				currentView = rawData;
