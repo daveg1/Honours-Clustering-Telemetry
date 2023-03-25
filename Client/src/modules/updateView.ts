@@ -1,8 +1,6 @@
-import type { Globals } from '../types/Globals';
+export function updateView(): void {
+	globalThis.three.camera.aspect = window.innerWidth / window.innerHeight;
+	globalThis.three.camera.updateProjectionMatrix();
 
-export function updateView(globals: Globals): void {
-	globals.camera.aspect = window.innerWidth / window.innerHeight;
-	globals.camera.updateProjectionMatrix();
-
-	globals.renderer.setSize(window.innerWidth, window.innerHeight);
+	globalThis.three.renderer.setSize(window.innerWidth, window.innerHeight);
 }

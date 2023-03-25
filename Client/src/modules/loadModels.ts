@@ -38,12 +38,12 @@ async function getSGS(): Promise<THREE.Group> {
 	return sgs;
 }
 
-export async function loadModels(scene: THREE.Scene): Promise<void> {
+export async function loadModels(): Promise<void> {
 	// Load ROV Model
 	const rov = await getROV();
-	scene.add(rov);
+	globalThis.three.scene.add(rov);
 
 	// Load SGS Model
 	const sgs = await getSGS();
-	scene.add(sgs);
+	globalThis.three.scene.add(sgs);
 }

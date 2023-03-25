@@ -1,7 +1,5 @@
-import type { Globals } from '../../types/Globals';
-
-export function createHeatMap(): Globals['heatMap'] {
-	const gradient: Globals['heatMap'] = [];
+export function createHeatMap(): typeof globalThis.heatMap {
+	const gradient: typeof globalThis.heatMap = [];
 
 	let r = 0;
 	let g = 1;

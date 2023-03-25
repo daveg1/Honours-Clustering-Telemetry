@@ -1,10 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import type { Globals } from '../types/Globals';
 import { createHeatMap } from './utils/createHeatMap';
 import { createLighting } from './utils/createLighting';
 
-export function initialiseGlobals(): Globals {
+export function initGlobals() {
 	const renderer = new THREE.WebGLRenderer({
 		// antialias: true, // crap performance
 		// logarithmicDepthBuffer: true, // doesn't help
@@ -44,8 +43,13 @@ export function initialiseGlobals(): Globals {
 	controls.rotateSpeed = 1.3;
 	controls.maxPolarAngle = Math.PI / 2;
 
-	// Create heat map gradient
-	const heatMap = createHeatMap();
+	globalThis.three = {
+		camera,
+		controls,
+		renderer,
+		scene,
+	};
 
-	return { renderer, scene, camera, controls, heatMap };
+	// Create heat map gradient
+	globalThis.heatMap = createHeatMap();
 }

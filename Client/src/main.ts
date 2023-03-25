@@ -1,25 +1,29 @@
 import './style.css';
+import { initGlobals } from './modules/initialiseGlobals';
 import { loadModels } from './modules/loadModels';
-import { initialiseGlobals } from './modules/initialiseGlobals';
-import { updateView } from './modules/updateView';
 import { loadRovCampaign } from './modules/loadRovCampaign';
+import { updateView } from './modules/updateView';
 import Stats from 'stats.js';
 
-const globals = initialiseGlobals();
+initGlobals();
+
 const stats = new Stats();
 stats.showPanel(0); // FPS counter
 
 function animate() {
 	requestAnimationFrame(animate);
 	stats.begin();
-	globals.controls.update();
-	globals.renderer.render(globals.scene, globals.camera);
+	globalThis.three.controls.update();
+	globalThis.three.renderer.render(
+		globalThis.three.scene,
+		globalThis.three.camera
+	);
 	stats.end();
 }
 
 window.onresize = () => {
 	// Update renderer and camera
-	updateView(globals);
+	updateView();
 };
 
 window.onload = async () => {
@@ -28,11 +32,11 @@ window.onload = async () => {
 	statusElem.textContent = 'Loading...';
 
 	// Set up viewer
-	updateView(globals);
+	updateView();
 
 	// Load models
 	try {
-		await loadModels(globals.scene);
+		await loadModels();
 		console.log('Models loaded');
 	} catch (error) {
 		statusElem.textContent = 'Error loading models';
@@ -42,7 +46,7 @@ window.onload = async () => {
 
 	// Load ROV Data and render point cloud
 	try {
-		await loadRovCampaign(globals);
+		await loadRovCampaign();
 		console.log('Campaign data loaded');
 	} catch (error) {
 		statusElem.textContent = 'Error loading campaign data';
@@ -51,7 +55,7 @@ window.onload = async () => {
 	}
 
 	// Add viewer and FPS counter once ready
-	document.body.append(globals.renderer.domElement);
+	document.body.append(globalThis.three.renderer.domElement);
 	document.body.append(stats.dom);
 	statusElem.textContent = 'Ready';
 

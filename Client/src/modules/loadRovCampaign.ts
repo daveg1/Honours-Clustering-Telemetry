@@ -1,9 +1,8 @@
 import * as THREE from 'three';
-import type { Globals } from '../types/Globals';
 import type { RovCampaign } from '../types/RovCampaign';
 import { getTelemetryDenoised, getTelemetryRaw } from './telemetry';
 
-function createPointCloud(data: RovCampaign, globals: Globals): THREE.Points {
+function createPointCloud(data: RovCampaign): THREE.Points {
 	const vertices = data.positions;
 	const geometry = new THREE.BufferGeometry();
 	geometry.setAttribute(
@@ -24,7 +23,7 @@ function createPointCloud(data: RovCampaign, globals: Globals): THREE.Points {
 	// * Note: hardcoding the first leg of the journey
 	// TODO: do this dynamically based on user input
 	data.kpi.slice(0, 10619).forEach((k) => {
-		const gradient = globals.heatMap[k];
+		const gradient = globalThis.heatMap[k];
 		colour.setRGB(gradient[0], gradient[1], gradient[2]);
 		colours.push(colour.r, colour.g, colour.b);
 	});
@@ -39,7 +38,7 @@ function createPointCloud(data: RovCampaign, globals: Globals): THREE.Points {
 	return pointCloud;
 }
 
-export async function loadRovCampaign(globals: Globals) {
+export async function loadRovCampaign() {
 	console.log('loading rov data');
 
 	const rawData = await getTelemetryRaw();
@@ -52,8 +51,8 @@ export async function loadRovCampaign(globals: Globals) {
 
 	// Point cloud
 	let currentView = rawData;
-	let currentPointCloud = createPointCloud(currentView, globals);
-	globals.scene.add(currentPointCloud);
+	let currentPointCloud = createPointCloud(currentView);
+	globalThis.three.scene.add(currentPointCloud);
 
 	// Denoised form
 	const denoisedForm =
@@ -73,9 +72,9 @@ export async function loadRovCampaign(globals: Globals) {
 			// ).checked;
 
 			currentView = await getTelemetryDenoised(start, end);
-			globals.scene.remove(currentPointCloud);
-			currentPointCloud = createPointCloud(currentView, globals);
-			globals.scene.add(currentPointCloud);
+			globalThis.three.scene.remove(currentPointCloud);
+			currentPointCloud = createPointCloud(currentView);
+			globalThis.three.scene.add(currentPointCloud);
 		};
 	}
 
@@ -86,7 +85,7 @@ export async function loadRovCampaign(globals: Globals) {
 	// Switch between raw and denoised point clouds
 	if (toggleViewButton) {
 		toggleViewButton.onclick = async () => {
-			globals.scene.remove(currentPointCloud);
+			globalThis.three.scene.remove(currentPointCloud);
 
 			if (currentView === rawData) {
 				const startInput =
@@ -103,8 +102,8 @@ export async function loadRovCampaign(globals: Globals) {
 				toggleViewButton.textContent = 'Show denoised';
 			}
 
-			currentPointCloud = createPointCloud(currentView, globals);
-			globals.scene.add(currentPointCloud);
+			currentPointCloud = createPointCloud(currentView);
+			globalThis.three.scene.add(currentPointCloud);
 		};
 
 		// Enable button
