@@ -12,7 +12,7 @@ declare global {
 	var heatMap: [number, number, number, number][];
 
 	var pointCloud: {
-		data: RovCampaign;
-		points: THREE.Points;
+		data?: RovCampaign;
+		points?: THREE.Points;
 	};
 }

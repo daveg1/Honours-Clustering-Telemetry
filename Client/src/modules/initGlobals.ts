@@ -52,4 +52,6 @@ export function initGlobals() {
 
 	// Create heat map gradient
 	globalThis.heatMap = createHeatMap();
+
+	globalThis.pointCloud = {};
 }
