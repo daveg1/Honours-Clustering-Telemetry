@@ -1,5 +1,5 @@
 import './style.css';
-import { initGlobals } from './modules/initialiseGlobals';
+import { initGlobals } from './modules/initGlobals';
 import { loadModels } from './modules/loadModels';
 import { loadRovCampaign } from './modules/loadRovCampaign';
 import { updateView } from './modules/updateView';
