@@ -55,6 +55,30 @@ export async function loadRovCampaign(globals: Globals) {
 	let currentPointCloud = createPointCloud(currentView, globals);
 	globals.scene.add(currentPointCloud);
 
+	// Denoised form
+	const denoisedForm =
+		document.querySelector<HTMLFormElement>('#denoised-form');
+
+	if (denoisedForm) {
+		denoisedForm.onsubmit = async (e) => {
+			e.preventDefault();
+
+			const start = (
+				denoisedForm.elements.namedItem('start') as HTMLInputElement
+			).valueAsNumber;
+			const end = (denoisedForm.elements.namedItem('end') as HTMLInputElement)
+				.valueAsNumber;
+			// const windowed = (
+			// 	denoisedForm.elements.namedItem('windowed') as HTMLInputElement
+			// ).checked;
+
+			currentView = await getTelemetryDenoised(start, end);
+			globals.scene.remove(currentPointCloud);
+			currentPointCloud = createPointCloud(currentView, globals);
+			globals.scene.add(currentPointCloud);
+		};
+	}
+
 	// Add event listener for swapping view
 	const toggleViewButton =
 		document.querySelector<HTMLButtonElement>('#toggle-view');
