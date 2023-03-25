@@ -38,6 +38,23 @@ function createPointCloud(data: RovCampaign): THREE.Points {
 	return pointCloud;
 }
 
+async function handleDenoisedFormSubmit(this: HTMLFormElement, e: Event) {
+	e.preventDefault();
+
+	const start = (this.elements.namedItem('start') as HTMLInputElement)
+		.valueAsNumber;
+	const end = (this.elements.namedItem('end') as HTMLInputElement)
+		.valueAsNumber;
+	// const windowed = (
+	// 	denoisedForm.elements.namedItem('windowed') as HTMLInputElement
+	// ).checked;
+
+	globalThis.pointCloud.data = await getTelemetryDenoised(start, end);
+	globalThis.three.scene.remove(globalThis.pointCloud.points);
+	globalThis.pointCloud.points = createPointCloud(globalThis.pointCloud.data);
+	globalThis.three.scene.add(globalThis.pointCloud.points);
+}
+
 export async function loadRovCampaign() {
 	console.log('loading rov data');
 
@@ -49,64 +66,16 @@ export async function loadRovCampaign() {
 	// let vectors = [];
 	// let campaignLeg = [];
 
-	// Point cloud
-	let currentView = rawData;
-	let currentPointCloud = createPointCloud(currentView);
-	globalThis.three.scene.add(currentPointCloud);
+	// Raw data point cloud
+	globalThis.pointCloud.data = rawData;
+	globalThis.pointCloud.points = createPointCloud(globalThis.pointCloud.data);
+	globalThis.three.scene.add(globalThis.pointCloud.points);
 
 	// Denoised form
 	const denoisedForm =
 		document.querySelector<HTMLFormElement>('#denoised-form');
 
 	if (denoisedForm) {
-		denoisedForm.onsubmit = async (e) => {
-			e.preventDefault();
-
-			const start = (
-				denoisedForm.elements.namedItem('start') as HTMLInputElement
-			).valueAsNumber;
-			const end = (denoisedForm.elements.namedItem('end') as HTMLInputElement)
-				.valueAsNumber;
-			// const windowed = (
-			// 	denoisedForm.elements.namedItem('windowed') as HTMLInputElement
-			// ).checked;
-
-			currentView = await getTelemetryDenoised(start, end);
-			globalThis.three.scene.remove(currentPointCloud);
-			currentPointCloud = createPointCloud(currentView);
-			globalThis.three.scene.add(currentPointCloud);
-		};
-	}
-
-	// Add event listener for swapping view
-	const toggleViewButton =
-		document.querySelector<HTMLButtonElement>('#toggle-view');
-
-	// Switch between raw and denoised point clouds
-	if (toggleViewButton) {
-		toggleViewButton.onclick = async () => {
-			globalThis.three.scene.remove(currentPointCloud);
-
-			if (currentView === rawData) {
-				const startInput =
-					document.querySelector<HTMLInputElement>('#start-input');
-				const endInput = document.querySelector<HTMLInputElement>('#end-input');
-
-				const start = startInput?.valueAsNumber ?? 0;
-				const end = endInput?.valueAsNumber ?? 10619;
-
-				currentView = await getTelemetryDenoised(start, end);
-				toggleViewButton.textContent = 'Show raw';
-			} else {
-				currentView = rawData;
-				toggleViewButton.textContent = 'Show denoised';
-			}
-
-			currentPointCloud = createPointCloud(currentView);
-			globalThis.three.scene.add(currentPointCloud);
-		};
-
-		// Enable button
-		toggleViewButton.disabled = false;
+		denoisedForm.onsubmit = handleDenoisedFormSubmit.bind(denoisedForm);
 	}
 }

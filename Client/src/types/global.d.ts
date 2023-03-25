@@ -1,4 +1,5 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { RovCampaign } from './RovCampaign';
 
 declare global {
 	var three: {
@@ -9,4 +10,9 @@ declare global {
 	};
 
 	var heatMap: [number, number, number, number][];
+
+	var pointCloud: {
+		data: RovCampaign;
+		points: THREE.Points;
+	};
 }
