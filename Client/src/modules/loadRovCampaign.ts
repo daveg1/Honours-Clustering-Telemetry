@@ -20,9 +20,7 @@ function createPointCloud(data: RovCampaign): THREE.Points {
 	const colours: number[] = [];
 	const colour = new THREE.Color();
 
-	// * Note: hardcoding the first leg of the journey
-	// TODO: do this dynamically based on user input
-	data.kpi.slice(0, 10619).forEach((k) => {
+	data.kpi.forEach((k) => {
 		const gradient = globalThis.heatMap[k];
 		colour.setRGB(gradient[0], gradient[1], gradient[2]);
 		colours.push(colour.r, colour.g, colour.b);
@@ -50,7 +48,11 @@ async function handleDenoisedFormSubmit(this: HTMLFormElement, e: Event) {
 	// ).checked;
 
 	globalThis.pointCloud.data = await getTelemetryDenoised(start, end);
-	globalThis.three.scene.remove(globalThis.pointCloud.points);
+
+	if (globalThis.pointCloud.points) {
+		globalThis.three.scene.remove(globalThis.pointCloud.points);
+	}
+
 	globalThis.pointCloud.points = createPointCloud(globalThis.pointCloud.data);
 	globalThis.three.scene.add(globalThis.pointCloud.points);
 }
