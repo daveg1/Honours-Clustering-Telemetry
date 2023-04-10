@@ -40,7 +40,7 @@ async function readFile(filePath: string): Promise<RovCampaign> {
 			data.headings.push(parseFloat(Heading))
 		})
 		.once('end', () => {
-			const maxInterval = 10000000
+			const maxInterval = 10_000
 			let tickDifference = 0
 
 			// Normalise times between 0 and 255 for mapping with heatmap gradient in 3D model.

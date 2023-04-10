@@ -20,6 +20,11 @@ function createPointCloud(data: RovCampaign): THREE.Points {
 	const colours: number[] = [];
 	const colour = new THREE.Color();
 
+	console.log(globalThis.heatMap);
+	console.log(
+		[...new Set(data.kpi)].sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))
+	);
+
 	data.kpi.forEach((k) => {
 		const gradient = globalThis.heatMap[k];
 		colour.setRGB(gradient[0], gradient[1], gradient[2]);
