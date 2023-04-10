@@ -48,11 +48,10 @@ async function handleDenoisedFormSubmit(this: HTMLFormElement, e: Event) {
 		.valueAsNumber;
 	const end = (this.elements.namedItem('end') as HTMLInputElement)
 		.valueAsNumber;
-	// const windowed = (
-	// 	denoisedForm.elements.namedItem('windowed') as HTMLInputElement
-	// ).checked;
+	const windowed = (this.elements.namedItem('windowed') as HTMLInputElement)
+		.checked;
 
-	globalThis.pointCloud.data = await getTelemetryDenoised(start, end);
+	globalThis.pointCloud.data = await getTelemetryDenoised(start, end, windowed);
 
 	if (globalThis.pointCloud.points) {
 		globalThis.three.scene.remove(globalThis.pointCloud.points);

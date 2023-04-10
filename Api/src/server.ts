@@ -16,6 +16,7 @@ app.use(cors())
 app.get('/rov/denoised', async (req, res) => {
 	const start = parseInt(req.query.start?.toString() ?? '', 10)
 	const end = parseInt(req.query?.end?.toString() ?? '', 10)
+	const windowed = String(req.query?.windowed)
 
 	if (Number.isNaN(start) || Number.isNaN(end)) {
 		return res.status(401).json({ error: 'start and end must be integers' })
@@ -23,7 +24,7 @@ app.get('/rov/denoised', async (req, res) => {
 
 	// Run DBSCAN to generate denoised CSV file
 	// * ideally this outputs to JSON directly to save some steps
-	const clusterProcess = performClustering(start, end)
+	const clusterProcess = performClustering(start, end, windowed)
 
 	clusterProcess
 		.once('close', async () => {
