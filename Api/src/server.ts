@@ -14,9 +14,15 @@ app.use(cors())
 // Set routes
 // TODO: add queryparams for a specific leg of the journey
 app.get('/rov/denoised', async (req, res) => {
+	const eps = parseFloat(req.query.eps?.toString() ?? '')
+	const min_samples = parseInt(req.query?.min_samples?.toString() ?? '', 10)
 	const start = parseInt(req.query.start?.toString() ?? '', 10)
 	const end = parseInt(req.query?.end?.toString() ?? '', 10)
 	const windowed = String(req.query?.windowed)
+
+	if (Number.isNaN(eps) || Number.isNaN(min_samples)) {
+		return res.status(401).json({ error: 'eps and min samples must be integers' })
+	}
 
 	if (Number.isNaN(start) || Number.isNaN(end)) {
 		return res.status(401).json({ error: 'start and end must be integers' })
@@ -24,7 +30,7 @@ app.get('/rov/denoised', async (req, res) => {
 
 	// Run DBSCAN to generate denoised CSV file
 	// * ideally this outputs to JSON directly to save some steps
-	const clusterProcess = performClustering(start, end, windowed)
+	const clusterProcess = performClustering(eps, min_samples, start, end, windowed)
 
 	clusterProcess
 		.once('close', async () => {

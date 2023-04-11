@@ -9,9 +9,17 @@ try:
 	# Remove old denoised datafile
 	Path.unlink(Path(basePath, 'data/telemetry_denoised.csv').resolve(), missing_ok=True)
 
-	start = int(sys.argv[2])
-	end = int(sys.argv[3])
-	windowed = sys.argv[4]
+	epsilon=float(sys.argv[2])
+	min_samples=int(sys.argv[3])
+	start = int(sys.argv[4])
+	end = int(sys.argv[5])
+	windowed = sys.argv[6]
+
+	if epsilon <= 0.0:
+		epsilon=0.1
+
+	if min_samples <= 0:
+		min_samples=11
 
 	# Load telemetry
 	telemetry = pd.read_csv(Path(basePath, 'data/telemetry.csv').resolve())
@@ -22,7 +30,7 @@ try:
 	if windowed == 'true':
 		chunks = []
 		index = 0
-		window = 500
+		window = 10000
 
 		while index <= X.shape[0]:
 			# Get windowed segment (chunk)
@@ -32,7 +40,7 @@ try:
 				break
 
 			# Run clustering and append chunk
-			db = DBSCAN(eps=0.15, min_samples=12).fit(chunk)
+			db = DBSCAN(eps=epsilon, min_samples=min_samples).fit(chunk)
 			chunk = chunk.assign(Label=db.labels_)
 			chunks.append(chunk)
 			index += window
@@ -44,7 +52,7 @@ try:
 		X = pd.concat(chunks)
 	else:
 		# Perform clustering
-		db = DBSCAN(eps=0.15, min_samples=10).fit(X)
+		db = DBSCAN(eps=epsilon, min_samples=min_samples).fit(X)
 
 		# Label and denoise data
 		X['Label'] = db.labels_

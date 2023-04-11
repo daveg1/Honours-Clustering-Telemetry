@@ -13,11 +13,15 @@ export async function getTelemetryRaw(): Promise<RovCampaign> {
 }
 
 export async function getTelemetryDenoised(
+	eps: number,
+	min_samples: number,
 	start: number,
 	end: number,
 	windowed: boolean
 ): Promise<RovCampaign> {
 	const url = new URL(endpoint + '/denoised');
+	url.searchParams.set('eps', eps.toString());
+	url.searchParams.set('min_samples', min_samples.toString());
 	url.searchParams.set('start', start.toString());
 	url.searchParams.set('end', end.toString());
 	url.searchParams.set('windowed', String(windowed));

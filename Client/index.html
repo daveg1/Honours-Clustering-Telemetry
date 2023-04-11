@@ -11,13 +11,43 @@
 	<body>
 		<form id="denoised-form" class="form">
 			<div class="form__group">
+				<label for="eps">Epsilon</label>
+				<input
+					type="number"
+					id="eps"
+					name="eps"
+					placeholder="Epsilon"
+					value="0.1"
+					required
+				/>
+			</div>
+
+			<div class="form__group">
+				<label for="min_samples">Minimum samples</label>
+				<input
+					type="number"
+					id="min_samples"
+					name="min_samples"
+					placeholder="Minimum samples"
+					value="11"
+					required
+				/>
+			</div>
+
+			<div class="form__group">
 				<label for="start">Start range</label>
-				<input type="number" id="start" name="start" placeholder="Start" />
+				<input
+					type="number"
+					id="start"
+					name="start"
+					placeholder="Start"
+					required
+				/>
 			</div>
 
 			<div class="form__group">
 				<label for="end">End range</label>
-				<input type="number" id="end" name="end" placeholder="End" />
+				<input type="number" id="end" name="end" placeholder="End" required />
 			</div>
 
 			<div class="form__group form__group--checkbox">
@@ -25,7 +55,7 @@
 				<label for="windowed">windowed</label>
 			</div>
 
-			<button>View denoised</button>
+			<button id="view">View denoised</button>
 		</form>
 
 		<div class="bar">

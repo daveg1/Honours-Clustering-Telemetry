@@ -44,6 +44,11 @@ function createPointCloud(data: RovCampaign): THREE.Points {
 async function handleDenoisedFormSubmit(this: HTMLFormElement, e: Event) {
 	e.preventDefault();
 
+	const eps = (this.elements.namedItem('eps') as HTMLInputElement)
+		.valueAsNumber;
+	const min_samples = (
+		this.elements.namedItem('min_samples') as HTMLInputElement
+	).valueAsNumber;
 	const start = (this.elements.namedItem('start') as HTMLInputElement)
 		.valueAsNumber;
 	const end = (this.elements.namedItem('end') as HTMLInputElement)
@@ -51,7 +56,17 @@ async function handleDenoisedFormSubmit(this: HTMLFormElement, e: Event) {
 	const windowed = (this.elements.namedItem('windowed') as HTMLInputElement)
 		.checked;
 
-	globalThis.pointCloud.data = await getTelemetryDenoised(start, end, windowed);
+	const submitButton = this.querySelector('#view') as HTMLButtonElement;
+	submitButton.textContent = 'Loading...';
+	submitButton.disabled = true;
+
+	globalThis.pointCloud.data = await getTelemetryDenoised(
+		eps,
+		min_samples,
+		start,
+		end,
+		windowed
+	);
 
 	if (globalThis.pointCloud.points) {
 		globalThis.three.scene.remove(globalThis.pointCloud.points);
@@ -59,6 +74,9 @@ async function handleDenoisedFormSubmit(this: HTMLFormElement, e: Event) {
 
 	globalThis.pointCloud.points = createPointCloud(globalThis.pointCloud.data);
 	globalThis.three.scene.add(globalThis.pointCloud.points);
+
+	submitButton.textContent = 'View denoised';
+	submitButton.disabled = false;
 }
 
 export async function loadRovCampaign() {

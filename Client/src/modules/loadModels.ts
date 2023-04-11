@@ -31,7 +31,7 @@ async function getSGS(): Promise<THREE.Group> {
 		color: new THREE.Color(0xffffff),
 		flatShading: true,
 		// side: THREE.FrontSide,
-		// opacity: 0.65,
+		opacity: 0.65,
 		// transparent: true,
 	});
 
