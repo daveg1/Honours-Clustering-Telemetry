@@ -2,6 +2,18 @@ import * as THREE from 'three';
 import type { RovCampaign } from '../types/RovCampaign';
 import { getTelemetryDenoised, getTelemetryRaw } from './telemetry';
 
+type Views = {
+	currentView: 'raw' | 'denoised';
+	raw?: RovCampaign;
+	denoised?: RovCampaign;
+};
+
+const views: Views = {
+	currentView: 'raw',
+};
+
+let toggleViewButton: HTMLButtonElement;
+
 function createPointCloud(data: RovCampaign): THREE.Points {
 	const vertices = data.positions;
 	const geometry = new THREE.BufferGeometry();
@@ -16,22 +28,32 @@ function createPointCloud(data: RovCampaign): THREE.Points {
 		size: 0.01,
 	});
 
-	// Set point cloud colours
-	const colours: number[] = [];
-	const colour = new THREE.Color();
+	const clusters: number[] = [];
 
-	console.log(globalThis.heatMap);
-	console.log(
-		[...new Set(data.kpi)].sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))
-	);
+	if (data.labels.length) {
+		console.log('run labels');
+		// Set point cloud colours
+		const colours: THREE.Color[] = [];
 
-	data.kpi.forEach((k) => {
-		const gradient = globalThis.heatMap[k];
-		colour.setRGB(gradient[0], gradient[1], gradient[2]);
-		colours.push(colour.r, colour.g, colour.b);
-	});
+		for (let i = 0; i < 64; i++) {
+			colours.push(
+				new THREE.Color(Math.random(), Math.random(), Math.random())
+			);
+		}
 
-	geometry.setAttribute('color', new THREE.Float32BufferAttribute(colours, 3));
+		data.labels.forEach((l) => {
+			clusters.push(colours[l].r, colours[l].g, colours[l].b);
+		});
+	} else {
+		const colour = new THREE.Color();
+		data.kpi.forEach((k) => {
+			const gradient = globalThis.heatMap[k];
+			colour.setRGB(gradient[0], gradient[1], gradient[2]);
+			clusters.push(colour.r, colour.g, colour.b);
+		});
+	}
+
+	geometry.setAttribute('color', new THREE.Float32BufferAttribute(clusters, 3));
 
 	const pointCloud = new THREE.Points(geometry, pointsMaterial);
 	pointCloud.scale.set(0.1, 0.1, 0.1);
@@ -39,6 +61,15 @@ function createPointCloud(data: RovCampaign): THREE.Points {
 	pointCloud.position.set(1, 6.8, 1.25);
 
 	return pointCloud;
+}
+
+function showPointCloud(data: RovCampaign) {
+	if (globalThis.pointCloud.points) {
+		globalThis.three.scene.remove(globalThis.pointCloud.points);
+	}
+
+	globalThis.pointCloud.points = createPointCloud(data);
+	globalThis.three.scene.add(globalThis.pointCloud.points);
 }
 
 async function handleDenoisedFormSubmit(this: HTMLFormElement, e: Event) {
@@ -68,15 +99,13 @@ async function handleDenoisedFormSubmit(this: HTMLFormElement, e: Event) {
 		windowed
 	);
 
-	if (globalThis.pointCloud.points) {
-		globalThis.three.scene.remove(globalThis.pointCloud.points);
-	}
+	views.denoised = globalThis.pointCloud.data;
 
-	globalThis.pointCloud.points = createPointCloud(globalThis.pointCloud.data);
-	globalThis.three.scene.add(globalThis.pointCloud.points);
+	showPointCloud(globalThis.pointCloud.data);
 
 	submitButton.textContent = 'View denoised';
 	submitButton.disabled = false;
+	toggleViewButton.disabled = false;
 }
 
 export async function loadRovCampaign() {
@@ -84,11 +113,7 @@ export async function loadRovCampaign() {
 
 	const rawData = await getTelemetryRaw();
 
-	// Each route
-	// const rovCampaigns = [];
-	// const rovCampaignVectors = [];
-	// let vectors = [];
-	// let campaignLeg = [];
+	views.raw = rawData;
 
 	// Raw data point cloud
 	globalThis.pointCloud.data = rawData;
@@ -96,10 +121,28 @@ export async function loadRovCampaign() {
 	globalThis.three.scene.add(globalThis.pointCloud.points);
 
 	// Denoised form
-	const denoisedForm =
-		document.querySelector<HTMLFormElement>('#denoised-form');
+	const denoisedForm = document.querySelector(
+		'#denoised-form'
+	) as HTMLFormElement;
 
-	if (denoisedForm) {
-		denoisedForm.onsubmit = handleDenoisedFormSubmit.bind(denoisedForm);
-	}
+	denoisedForm.onsubmit = handleDenoisedFormSubmit.bind(denoisedForm);
+
+	toggleViewButton = document.querySelector(
+		'#toggle-view'
+	) as HTMLButtonElement;
+
+	// disabled until first denoised dataset is retreived
+	toggleViewButton.disabled = true;
+
+	toggleViewButton.onclick = () => {
+		console.log(views.currentView, views);
+
+		if (views.currentView === 'raw') {
+			views.currentView = 'denoised';
+			showPointCloud(views.denoised!);
+		} else {
+			views.currentView = 'raw';
+			showPointCloud(views.raw!);
+		}
+	};
 }

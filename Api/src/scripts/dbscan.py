@@ -68,7 +68,7 @@ try:
 	)
 
 	# Remove label as no longer needed
-	X.drop(columns='Label')
+	# X.drop(columns='Label')
 
 	# Output to CSV to be parsed by server
 	# TODO: Ideally we output directly to JSON so there's one less step

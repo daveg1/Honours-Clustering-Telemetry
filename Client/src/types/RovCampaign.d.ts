@@ -5,4 +5,5 @@ export type RovCampaign = {
 	rolls: number[];
 	pitches: number[];
 	headings: number[];
+	labels: number[];
 };

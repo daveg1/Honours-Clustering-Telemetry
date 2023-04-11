@@ -14,6 +14,7 @@ async function readFile(filePath: string): Promise<RovCampaign> {
 		rolls: [],
 		pitches: [],
 		headings: [],
+		labels: [],
 	}
 
 	const eastingOrigin = parseFloat('0.5614811252705111')
@@ -23,7 +24,7 @@ async function readFile(filePath: string): Promise<RovCampaign> {
 		.createReadStream(filePath)
 		.pipe(csvParser())
 		.on('data', (row: DataRow) => {
-			const { Date: date, Time, Easting, Northing, WaterDepth, Roll, Pitch, Heading } = row
+			const { Date: date, Time, Easting, Northing, WaterDepth, Roll, Pitch, Heading, Label } = row
 
 			const [year, month, day] = (date as string).split('-')
 			const dateTime = new Date(`20${year}-${month}-${day}T${Time}`).getTime()
@@ -38,6 +39,9 @@ async function readFile(filePath: string): Promise<RovCampaign> {
 			data.rolls.push(parseFloat(Roll))
 			data.pitches.push(parseFloat(Pitch))
 			data.headings.push(parseFloat(Heading))
+			if (parseInt(Label)) {
+				data.labels.push(parseInt(Label))
+			}
 		})
 		.once('end', () => {
 			const maxInterval = 10_000

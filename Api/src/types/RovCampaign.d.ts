@@ -5,6 +5,7 @@ export type RovCampaign = {
 	rolls: number[]
 	pitches: number[]
 	headings: number[]
+	labels: number[]
 }
 
 export type DataRow = {
