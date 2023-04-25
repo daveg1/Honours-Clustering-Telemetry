@@ -39,7 +39,8 @@ async function readFile(filePath: string): Promise<RovCampaign> {
 			data.rolls.push(parseFloat(Roll))
 			data.pitches.push(parseFloat(Pitch))
 			data.headings.push(parseFloat(Heading))
-			if (parseInt(Label)) {
+
+			if (Number.isInteger(+Label)) {
 				data.labels.push(parseInt(Label))
 			}
 		})

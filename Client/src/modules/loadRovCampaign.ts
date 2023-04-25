@@ -16,91 +16,88 @@ let toggleViewButton: HTMLButtonElement;
 
 // Set point cloud colours
 const clusters: THREE.Color[] = [
-	// new THREE.Color('#1E90FF'),
-	// new THREE.Color('#DC143C'),
-	// new THREE.Color('#F5F5F5'),
-	// new THREE.Color('#DEB887'),
-	// new THREE.Color('#7FFF00'),
-	// new THREE.Color('#3CB371'),
-	// new THREE.Color('#00FFFF'),
-	// new THREE.Color('#FF4500'),
-	// new THREE.Color('#9932CC'),
-	// new THREE.Color('#FFE4B5'),
-	// new THREE.Color('#F0FFFF'),
-	// new THREE.Color('#5F9EA0'),
-	// new THREE.Color('#FFC0CB'),
-	// new THREE.Color('#00CED1'),
-	// new THREE.Color('#008B8B'),
-	// new THREE.Color('#9966CC'),
-	// new THREE.Color('#A9A9A9'),
-	// new THREE.Color('#FF00FF'),
-	// new THREE.Color('#483D8B'),
-	// new THREE.Color('#BC8F8F'),
-	// new THREE.Color('#FF00FF'),
-	// new THREE.Color('#ADFF2F'),
-	// new THREE.Color('#2E8B57'),
-	// new THREE.Color('#FFA500'),
-	// new THREE.Color('#DB7093'),
-	// new THREE.Color('#5F9EA0'),
-	// new THREE.Color('#CD853F'),
-	// new THREE.Color('#008080'),
-	// new THREE.Color('#8B0000'),
-	// new THREE.Color('#808080'),
-	// new THREE.Color('#9932CC'),
-	// new THREE.Color('#800080'),
-	// new THREE.Color('#FFC0CB'),
-	// new THREE.Color('#C71585'),
-	// new THREE.Color('#DC143C'),
-	// new THREE.Color('#DB7093'),
-	// new THREE.Color('#FFEFD5'),
-	// new THREE.Color('#F0FFF0'),
-	// new THREE.Color('#FDF5E6'),
-	// new THREE.Color('#FA8072'),
-	// new THREE.Color('#FFE4C4'),
-	// new THREE.Color('#F5FFFA'),
-	// new THREE.Color('#FF7F50'),
-	// new THREE.Color('#800000'),
-	// new THREE.Color('#FFE4E1'),
-	// new THREE.Color('#7FFF00'),
-	// new THREE.Color('#FFFFFF'),
-	// new THREE.Color('#808000'),
-	// new THREE.Color('#483D8B'),
-	// new THREE.Color('#DCDCDC'),
+	new THREE.Color('#1E90FF'),
+	new THREE.Color('#DC143C'),
+	new THREE.Color('#F5F5F5'),
+	new THREE.Color('#DEB887'),
+	new THREE.Color('#7FFF00'),
+	new THREE.Color('#3CB371'),
+	new THREE.Color('#00FFFF'),
+	new THREE.Color('#FF4500'),
+	new THREE.Color('#9932CC'),
+	new THREE.Color('#FFE4B5'),
+	new THREE.Color('#F0FFFF'),
+	new THREE.Color('#5F9EA0'),
+	new THREE.Color('#FFC0CB'),
+	new THREE.Color('#00CED1'),
+	new THREE.Color('#008B8B'),
+	new THREE.Color('#9966CC'),
+	new THREE.Color('#A9A9A9'),
+	new THREE.Color('#FF00FF'),
+	new THREE.Color('#483D8B'),
+	new THREE.Color('#BC8F8F'),
+	new THREE.Color('#FF00FF'),
+	new THREE.Color('#ADFF2F'),
+	new THREE.Color('#2E8B57'),
+	new THREE.Color('#FFA500'),
+	new THREE.Color('#DB7093'),
+	new THREE.Color('#5F9EA0'),
+	new THREE.Color('#CD853F'),
+	new THREE.Color('#008080'),
+	new THREE.Color('#8B0000'),
+	new THREE.Color('#808080'),
+	new THREE.Color('#9932CC'),
+	new THREE.Color('#800080'),
+	new THREE.Color('#FFC0CB'),
+	new THREE.Color('#C71585'),
+	new THREE.Color('#DC143C'),
+	new THREE.Color('#DB7093'),
+	new THREE.Color('#FFEFD5'),
+	new THREE.Color('#F0FFF0'),
+	new THREE.Color('#FDF5E6'),
+	new THREE.Color('#FA8072'),
+	new THREE.Color('#FFE4C4'),
+	new THREE.Color('#F5FFFA'),
+	new THREE.Color('#FF7F50'),
+	new THREE.Color('#800000'),
+	new THREE.Color('#FFE4E1'),
+	new THREE.Color('#7FFF00'),
+	new THREE.Color('#FFFFFF'),
+	new THREE.Color('#808000'),
+	new THREE.Color('#483D8B'),
+	new THREE.Color('#DCDCDC'),
 ];
 
 function createPointCloud(data: RovCampaign): THREE.Points {
-	const vertices = data.positions;
-	const geometry = new THREE.BufferGeometry();
-	geometry.setAttribute(
-		'position',
-		new THREE.Float32BufferAttribute(vertices, 3)
-	);
-
 	const pointsMaterial = new THREE.PointsMaterial({
+		size: 0.05,
 		vertexColors: true,
-		side: THREE.DoubleSide,
-		size: 0.01,
 	});
 
 	const colours: number[] = [];
 
-	for (let i = 0; i < 40; i++) {
-		clusters.push(new THREE.Color(Math.random(), Math.random(), Math.random()));
-	}
-
 	// If labels are set, use colours from cluster set
 	if (data.labels.length) {
-		console.log('using labels');
 		data.labels.forEach((l) => {
 			colours.push(clusters[l].r, clusters[l].g, clusters[l].b);
 		});
-	} else {
+	}
+
+	// Otherwise use heatmap colours
+	else {
 		data.kpi.forEach((k) => {
 			const gradient = globalThis.heatMap[k];
 			const colour = new THREE.Color(gradient[0], gradient[1], gradient[2]);
 			colours.push(colour.r, colour.g, colour.b);
 		});
 	}
+
+	const geometry = new THREE.BufferGeometry();
+
+	geometry.setAttribute(
+		'position',
+		new THREE.Float32BufferAttribute(data.positions, 3)
+	);
 
 	geometry.setAttribute('color', new THREE.Float32BufferAttribute(colours, 3));
 
