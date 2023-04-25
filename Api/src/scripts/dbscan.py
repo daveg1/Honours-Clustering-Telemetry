@@ -42,22 +42,20 @@ try:
 
       # Run clustering and append chunk
       db = DBSCAN(eps=epsilon, min_samples=min_samples).fit(chunk)
-      chunk = chunk.assign(Label=db.labels_)
+      chunk['Label'] = db.labels_
       chunks.append(chunk)
       index += window
-
-    # Label and denoise data
-    for chunk in chunks:
-      chunk = chunk[chunk['Label'] != -1]
 
     X = pd.concat(chunks)
   else:
     # Perform clustering
     db = DBSCAN(eps=epsilon, min_samples=min_samples).fit(X)
 
-    # Label and denoise data
+    # Label data
     X['Label'] = db.labels_
-    X = X[X['Label'] != -1]
+
+  # Denoise data
+  X = X[X['Label'] != -1]
 
   # Add placeholder columns to put file in correct format
   X = X.assign(
