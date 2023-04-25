@@ -85,6 +85,12 @@ export async function loadRovCampaign() {
 
 	denoisedForm.onsubmit = handleDenoisedFormSubmit.bind(denoisedForm);
 
+	Array.from(denoisedForm.elements).forEach((elem) => {
+		if (elem instanceof HTMLInputElement || elem instanceof HTMLButtonElement) {
+			elem.disabled = false;
+		}
+	});
+
 	toggleViewButton = document.querySelector(
 		'#toggle-view'
 	) as HTMLButtonElement;
@@ -93,8 +99,6 @@ export async function loadRovCampaign() {
 	toggleViewButton.disabled = true;
 
 	toggleViewButton.onclick = () => {
-		console.log(views.currentView, views);
-
 		if (views.currentView === 'raw') {
 			views.currentView = 'denoised';
 			showPointCloud(views.denoised!);

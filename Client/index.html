@@ -19,6 +19,7 @@
 					placeholder="Epsilon"
 					value="0.1"
 					required
+					disabled
 				/>
 			</div>
 
@@ -31,6 +32,7 @@
 					placeholder="Minimum samples"
 					value="11"
 					required
+					disabled
 				/>
 			</div>
 
@@ -42,20 +44,28 @@
 					name="start"
 					placeholder="Start"
 					required
+					disabled
 				/>
 			</div>
 
 			<div class="form__group">
 				<label for="end">End range</label>
-				<input type="number" id="end" name="end" placeholder="End" required />
+				<input
+					type="number"
+					id="end"
+					name="end"
+					placeholder="End"
+					required
+					disabled
+				/>
 			</div>
 
 			<div class="form__group form__group--checkbox">
-				<input type="checkbox" name="windowed" id="windowed" />
+				<input type="checkbox" name="windowed" id="windowed" disabled />
 				<label for="windowed">windowed</label>
 			</div>
 
-			<button id="view">View denoised</button>
+			<button disabled id="view">View denoised</button>
 		</form>
 
 		<div class="bar">
