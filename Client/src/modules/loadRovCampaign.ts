@@ -13,13 +13,19 @@ const views: Views = {
 };
 
 let toggleViewButton: HTMLButtonElement;
+let denoisedForm: HTMLFormElement;
 
 function showPointCloud(data: RovCampaign) {
 	if (globalThis.pointCloud.points) {
 		globalThis.three.scene.remove(globalThis.pointCloud.points);
 	}
 
-	globalThis.pointCloud.points = createPointCloud(data);
+	const start = (denoisedForm.elements.namedItem('start') as HTMLInputElement)
+		.valueAsNumber;
+	const end = (denoisedForm.elements.namedItem('end') as HTMLInputElement)
+		.valueAsNumber;
+
+	globalThis.pointCloud.points = createPointCloud(data, start, end);
 	globalThis.three.scene.add(globalThis.pointCloud.points);
 }
 
@@ -62,9 +68,7 @@ export async function loadRovCampaign() {
 	globalThis.three.scene.add(globalThis.pointCloud.points);
 
 	// Denoised form
-	const denoisedForm = document.querySelector(
-		'#denoised-form'
-	) as HTMLFormElement;
+	denoisedForm = document.querySelector('#denoised-form') as HTMLFormElement;
 
 	const start = denoisedForm.elements.namedItem('start') as HTMLInputElement;
 	const end = denoisedForm.elements.namedItem('end') as HTMLInputElement;

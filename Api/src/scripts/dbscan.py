@@ -11,7 +11,7 @@ try:
       Path(basePath, 'data/telemetry_denoised.csv').resolve(), missing_ok=True)
 
   epsilon = 0.2953844347168384
-  min_samples = 11
+  min_samples = 20
   start = int(sys.argv[2])
   end = int(sys.argv[3])
   windowed = sys.argv[4]

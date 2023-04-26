@@ -3,14 +3,18 @@ import type { RovCampaign } from '../../types/RovCampaign';
 import seedrandom from 'seedrandom';
 
 const clusters: THREE.Color[] = [];
-const random = seedrandom('seed');
+const random = seedrandom('seed2');
 
 // Generate 100 colours
 for (let i = 0; i < 100; i++) {
 	clusters.push(new THREE.Color(random(), random(), random()));
 }
 
-export function createPointCloud(data: RovCampaign): THREE.Points {
+export function createPointCloud(
+	data: RovCampaign,
+	start?: number,
+	end?: number
+): THREE.Points {
 	const pointsMaterial = new THREE.PointsMaterial({
 		size: 0.05,
 		vertexColors: true,
@@ -27,7 +31,15 @@ export function createPointCloud(data: RovCampaign): THREE.Points {
 
 	// Otherwise use heatmap colours
 	else {
-		data.kpi.forEach((k) => {
+		console.log(new THREE.Color('#464646'));
+		data.kpi.forEach((k, index) => {
+			if (start !== undefined && end !== undefined) {
+				if (index <= start || index >= end) {
+					colours.push(0.27, 0.27, 0.27);
+					return;
+				}
+			}
+
 			const gradient = globalThis.heatMap[k];
 			const colour = new THREE.Color(gradient[0], gradient[1], gradient[2]);
 			colours.push(colour.r, colour.g, colour.b);
