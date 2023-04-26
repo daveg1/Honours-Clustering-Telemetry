@@ -13,8 +13,7 @@ export type DataRow = {
 	Northing: string
 	WaterDepth: string
 	Label: string
-	Date: string
-	Time: string
+	DateTime: string
 	Roll: string
 	Pitch: string
 	Heading: string

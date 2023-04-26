@@ -24,11 +24,9 @@ async function readFile(filePath: string): Promise<RovCampaign> {
 		.createReadStream(filePath)
 		.pipe(csvParser())
 		.on('data', (row: DataRow) => {
-			const { Date: date, Time, Easting, Northing, WaterDepth, Roll, Pitch, Heading, Label } = row
+			const { DateTime, Easting, Northing, WaterDepth, Roll, Pitch, Heading, Label } = row
 
-			const [year, month, day] = (date as string).split('-')
-			const dateTime = new Date(`20${year}-${month}-${day}T${Time}`).getTime()
-
+			const dateTime = parseInt(DateTime)
 			const scaleFactor = 250 // used to scale up the points in the 3d model
 
 			data.positions.push((eastingOrigin - parseFloat(Easting)) * scaleFactor)
