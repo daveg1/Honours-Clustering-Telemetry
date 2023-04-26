@@ -10,17 +10,11 @@ try:
   Path.unlink(
       Path(basePath, 'data/telemetry_denoised.csv').resolve(), missing_ok=True)
 
-  epsilon = float(sys.argv[2])
-  min_samples = int(sys.argv[3])
-  start = int(sys.argv[4])
-  end = int(sys.argv[5])
-  windowed = sys.argv[6]
-
-  if epsilon <= 0.0:
-    epsilon = 0.1
-
-  if min_samples <= 0:
-    min_samples = 11
+  epsilon = 0.2953844347168384
+  min_samples = 11
+  start = int(sys.argv[2])
+  end = int(sys.argv[3])
+  windowed = sys.argv[4]
 
   # Load telemetry
   telemetry = pd.read_csv(Path(basePath, 'data/telemetry.csv').resolve())

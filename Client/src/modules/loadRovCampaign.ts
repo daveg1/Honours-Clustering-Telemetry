@@ -26,11 +26,6 @@ function showPointCloud(data: RovCampaign) {
 async function handleDenoisedFormSubmit(this: HTMLFormElement, e: Event) {
 	e.preventDefault();
 
-	const eps = (this.elements.namedItem('eps') as HTMLInputElement)
-		.valueAsNumber;
-	const min_samples = (
-		this.elements.namedItem('min_samples') as HTMLInputElement
-	).valueAsNumber;
 	const start = (this.elements.namedItem('start') as HTMLInputElement)
 		.valueAsNumber;
 	const end = (this.elements.namedItem('end') as HTMLInputElement)
@@ -42,13 +37,7 @@ async function handleDenoisedFormSubmit(this: HTMLFormElement, e: Event) {
 	submitButton.textContent = 'Loading...';
 	submitButton.disabled = true;
 
-	globalThis.pointCloud.data = await getTelemetryDenoised(
-		eps,
-		min_samples,
-		start,
-		end,
-		windowed
-	);
+	globalThis.pointCloud.data = await getTelemetryDenoised(start, end, windowed);
 
 	views.denoised = globalThis.pointCloud.data;
 	views.currentView = 'denoised';
