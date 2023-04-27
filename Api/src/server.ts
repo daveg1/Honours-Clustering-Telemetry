@@ -22,7 +22,6 @@ app.get('/rov/denoised', async (req, res) => {
 	}
 
 	// Run DBSCAN to generate denoised CSV file
-	// * ideally this outputs to JSON directly to save some steps
 	const clusterProcess = performClustering(start, end, windowed)
 
 	clusterProcess
