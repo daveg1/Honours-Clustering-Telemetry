@@ -6,7 +6,7 @@ const clusters: THREE.Color[] = [];
 const random = seedrandom('seed2');
 
 // Generate 100 colours
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 200; i++) {
 	clusters.push(new THREE.Color(random(), random(), random()));
 }
 
@@ -31,7 +31,6 @@ export function createPointCloud(
 
 	// Otherwise use heatmap colours
 	else {
-		console.log(new THREE.Color('#464646'));
 		data.kpi.forEach((k, index) => {
 			if (start !== undefined && end !== undefined) {
 				if (index <= start || index >= end) {
@@ -58,7 +57,7 @@ export function createPointCloud(
 	const pointCloud = new THREE.Points(geometry, pointsMaterial);
 	pointCloud.scale.set(0.1, 0.1, 0.1);
 	pointCloud.rotation.set(0, Math.PI / 3, 0);
-	pointCloud.position.set(1, 6.8, 1.25);
+	pointCloud.position.set(1, 11, 1.25);
 
 	return pointCloud;
 }
