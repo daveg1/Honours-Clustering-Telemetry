@@ -8,16 +8,14 @@ export function performClustering(start: number, end: number, windowed: string) 
 	console.log('Spawning process', 'start', start, 'end', end)
 
 	// * Hardcoded to first leg of journey for now
-	const process = spawn('python', [
-		scriptPath,
-		basePath,
-		start.toString(),
-		end.toString(),
-		windowed,
-	])
+	const process = spawn('py', [scriptPath, basePath, start.toString(), end.toString(), windowed])
 
 	process.stdout.on('data', (data) => {
 		console.log(data.toString())
+	})
+
+	process.stdout.on('error', (error) => {
+		console.log('Python error', error)
 	})
 
 	return process

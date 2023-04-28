@@ -10,12 +10,10 @@ try:
     Path.unlink(
         Path(basePath, 'data/telemetry_denoised.csv').resolve(), missing_ok=True)
 
-    # epsilon = 0.2953844347168384
-    epsilon = 0.4
-    min_samples = 5
+    epsilon = 0.15
+    min_samples = 9
     start = int(sys.argv[2])
     end = int(sys.argv[3])
-    windowed = sys.argv[4]
 
     # Load telemetry
     telemetry = pd.read_csv(Path(basePath, 'data/telemetry.csv').resolve())
@@ -23,31 +21,24 @@ try:
     X = telemetry.iloc[start:end]
     X = X[['Easting', 'Northing', 'WaterDepth']]
 
-    if windowed == 'true':
-        chunks = []
-        index = 0
-        window = 10000
+    chunks = []
+    index = 0
+    window = 10000
 
-        while index <= X.shape[0]:
-            # Get windowed segment (chunk)
-            chunk = X.iloc[index:index+window]
+    while index <= X.shape[0]:
+      # Get windowed segment (chunk)
+      chunk = X.iloc[index:index+window]
 
-            if chunk.shape[0] < 1:
-                break
+      if chunk.shape[0] < 1:
+        break
 
-            # Run clustering and append chunk
-            db = DBSCAN(eps=epsilon, min_samples=min_samples).fit(chunk)
-            chunk['Label'] = db.labels_
-            chunks.append(chunk)
-            index += window
+      # Run clustering and append chunk
+      db = DBSCAN(eps=epsilon, min_samples=min_samples).fit(chunk)
+      chunk = chunk.assign(Label=db.labels_)
+      chunks.append(chunk)
+      index += window
 
-        X = pd.concat(chunks)
-    else:
-        # Perform clustering
-        db = DBSCAN(eps=epsilon, min_samples=min_samples).fit(X)
-
-        # Label data
-        X['Label'] = db.labels_
+    X = pd.concat(chunks)
 
     # Denoise data
     X = X[X['Label'] != -1]
