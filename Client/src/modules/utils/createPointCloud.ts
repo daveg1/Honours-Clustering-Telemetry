@@ -57,7 +57,7 @@ export function createPointCloud(
 	const pointCloud = new THREE.Points(geometry, pointsMaterial);
 	pointCloud.scale.set(0.1, 0.1, 0.1);
 	pointCloud.rotation.set(0, Math.PI / 3, 0);
-	pointCloud.position.set(1, 11, 1.25);
+	pointCloud.position.set(1, 6.8, 1.25);
 
 	return pointCloud;
 }

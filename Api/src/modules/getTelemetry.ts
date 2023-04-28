@@ -30,7 +30,7 @@ async function readFile(filePath: string): Promise<RovCampaign> {
 			const scaleFactor = 250 // used to scale up the points in the 3d model
 
 			data.positions.push((eastingOrigin - parseFloat(Easting)) * scaleFactor)
-			data.positions.push(-1 * parseFloat(WaterDepth) * scaleFactor)
+			data.positions.push(-1 * parseFloat(WaterDepth))
 			data.positions.push((northingOrigin - parseFloat(Northing)) * scaleFactor)
 
 			data.times.push(dateTime)
