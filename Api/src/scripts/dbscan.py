@@ -11,7 +11,7 @@ try:
         Path(basePath, 'data/telemetry_denoised.csv').resolve(), missing_ok=True)
 
     # epsilon = 0.2953844347168384
-    epsilon = 0.1
+    epsilon = 0.4
     min_samples = 5
     start = int(sys.argv[2])
     end = int(sys.argv[3])
